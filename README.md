@@ -6,3 +6,5 @@ Currently utilizing the following devices:
 - Adafruit Huzzah ESP8266
 - Adafruit MCP9808 Temperature Sensor
 - Adafruit SH110X OLED Screen
+
+End state will include a 3D printed enclosure to mount the device on the outside of the refrigerator for easy monitoring.
