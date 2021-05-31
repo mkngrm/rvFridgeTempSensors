@@ -7,4 +7,4 @@ Currently utilizing the following devices:
 - Adafruit MCP9808 Temperature Sensor
 - Adafruit SH110X 128x64 OLED Screen
 
-End state will include a 3D printed enclosure to mount the device on the outside of the refrigerator for easy monitoring.
+End state will include a 3D printed enclosure to mount the device on the outside of the refrigerator for easy visual monitoring.
