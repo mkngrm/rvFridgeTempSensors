@@ -52,9 +52,7 @@ void loop() {
     maxTemp = 1;
   }  
   // PUSHING BUTTON C RESETS HIGH TEMP WARNING
-  if(!digitalRead(BUTTON_C)) {
-    !thresholdBreached;
-  }
+  if(!digitalRead(BUTTON_C)) !thresholdBreached;
   
   tempSensor.wake();
 
