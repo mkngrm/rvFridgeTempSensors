@@ -14,17 +14,17 @@ int measurements = 0;
 float sum = 0; 
 bool thresholdBreached;
 
-Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+Adafruit_MCP9808 tempSensor = Adafruit_MCP9808();
 Adafruit_SH110X display = Adafruit_SH110X(64, 128, &Wire);
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial); //waits for serial terminal to be open, necessary in newer arduino boards.
+  while (!Serial);
 
-  tempsensor.begin(0x18);
-  display.begin(0x3C, true); // Address 0x3C default
+  tempSensor.begin(0x18);
+  display.begin(0x3C, true);
       
-  tempsensor.setResolution(3); // sets the resolution mode of reading, the modes are defined in the table bellow:
+  tempSensor.setResolution(3);
   // Mode Resolution SampleTime
   //  0    0.5°C       30 ms
   //  1    0.25°C      65 ms
@@ -37,24 +37,32 @@ void setup() {
   pinMode(BUTTON_A, INPUT_PULLUP);
   pinMode(BUTTON_B, INPUT_PULLUP);
   pinMode(BUTTON_C, INPUT_PULLUP); 
-
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
-  display.setCursor(0,0);   
 }
 
 void loop() {
+  // SET threshold VALUE TO TEMPERATURE TO ALERT WHEN EXCEEDED
+  int threshold = 73;
   float avgTemp;
-  int threshold = 70;
+
+  // PUSHING BUTTON A RESETS AVERAGE
+  if(!digitalRead(BUTTON_A)) sum = measurements = 0; 
+  // PUSHING BUTTON B RESETS MIN/MAX
+  if(!digitalRead(BUTTON_A)) {
+    minTemp = 1000;
+    maxTemp = 1;
+  }  
+  // PUSHING BUTTON C RESETS HIGH TEMP WARNING
+  if(!digitalRead(BUTTON_C)) {
+    !thresholdBreached;
+  }
   
-  Serial.println("wake up MCP9808.... "); // wake up MCP9808 - power consumption ~200 mikro Ampere
-  tempsensor.wake();   // wake up, ready to read!
+  tempSensor.wake();
 
   // Read and print out the temperature to Serial, also shows the resolution mode used for reading.
   Serial.print("Resolution in mode: ");
-  Serial.println (tempsensor.getResolution());
-  float c = tempsensor.readTempC();
-  float f = tempsensor.readTempF();
+  Serial.println (tempSensor.getResolution());
+  float c = tempSensor.readTempC();
+  float f = tempSensor.readTempF();
   Serial.print("Temp: "); 
   Serial.print(c, 4); Serial.print("*C\t and "); 
   Serial.print(f, 4); Serial.println("*F.");
@@ -74,44 +82,31 @@ void loop() {
   sum += f;
   measurements++;
   avgTemp = sum / measurements;
-  
+
   // Print out to display
   display.clearDisplay();
-  display.setTextColor(SH110X_WHITE);
+  display.setTextColor(SH110X_WHITE, SH110X_BLACK);
   display.setCursor(0,0);
-  display.print("Current Temp: ");
-  display.print(f);
-  display.println(" F");
+  display.print("Current Temp: "); display.print(f); display.println(" F");
   display.println("");
   
   // Print average, minimum & maximum temperatures
-  display.print("Average Temp: ");
-  display.print(avgTemp);
-  display.println(" F");
+  display.print("Average Temp: "); display.print(avgTemp); display.println(" F");
   display.println("");
-  display.print("Minimum Temp: ");
-  display.print(minTemp);
-  display.println(" F");
-  display.print("Maximum Temp: ");
-  display.print(maxTemp);
-  display.println(" F");
+  display.print("Minimum Temp: "); display.print(minTemp); display.println(" F");
+  display.print("Maximum Temp: "); display.print(maxTemp); display.println(" F");
 
   // Print threshold breached warning if true
   if(thresholdBreached) {
     display.println("");
-    display.setTextColor(SH110X_RED);
+    display.setTextColor(SH110X_BLACK, SH110X_WHITE);
     display.print("! HIGH TEMP WARNING !");
   }
   else {
     display.println("");
-     display.setTextColor(SH110X_GREEN);
     display.print("No breaches detected.");
   }
   display.display();
   
-  //delay(2000);
-  //Serial.println("Shutdown MCP9808.... ");
-  tempsensor.shutdown_wake(1); // shutdown MSP9808 - power consumption ~0.1 mikro Ampere, stops temperature sampling
-  //Serial.println("");
-  //delay(200);
+  tempSensor.shutdown_wake(1);
 }
