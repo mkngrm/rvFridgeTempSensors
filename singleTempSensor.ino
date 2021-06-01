@@ -4,9 +4,9 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
-#define BUTTON_A  0
+#define BUTTON_A  2
 #define BUTTON_B 16
-#define BUTTON_C  2
+#define BUTTON_C  0
 
 float maxTemp = 1;
 float minTemp = 1000;
@@ -45,14 +45,19 @@ void loop() {
   float avgTemp;
 
   // PUSHING BUTTON A RESETS AVERAGE
-  if(!digitalRead(BUTTON_A)) sum = measurements = 0; 
-  // PUSHING BUTTON B RESETS MIN/MAX
   if(!digitalRead(BUTTON_A)) {
+    sum = 0;
+    measurements = 0; 
+  }
+  // PUSHING BUTTON B RESETS MIN/MAX
+  if(!digitalRead(BUTTON_B)) {
     minTemp = 1000;
     maxTemp = 1;
   }  
   // PUSHING BUTTON C RESETS HIGH TEMP WARNING
-  if(!digitalRead(BUTTON_C)) !thresholdBreached;
+  if(!digitalRead(BUTTON_C)) {
+    thresholdBreached = false;
+  }
   
   tempSensor.wake();
 
