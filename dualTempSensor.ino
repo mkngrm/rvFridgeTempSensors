@@ -21,7 +21,8 @@ bool thresholdBreached1;
 bool thresholdBreached2;
 
 Adafruit_MCP9808 tempSensor1 = Adafruit_MCP9808();
-Adafruit_PCT2075 tempSensor2 = Adafruit_PCT2075();
+Adafruit_MCP9808 tempSensor2 = Adafruit_MCP9808();
+
 Adafruit_SH110X display = Adafruit_SH110X(64, 128, &Wire);
 
 void setup() {
@@ -29,7 +30,7 @@ void setup() {
   while (!Serial); //waits for serial terminal to be open, necessary in newer arduino boards.
 
   tempSensor1.begin(0x18);
-  //tempSensor2.begin(0x37);
+  tempSensor2.begin(0x19);
   display.begin(0x3C, true); // Address 0x3C default
       
   tempSensor1.setResolution(3); // sets the resolution mode of reading, the modes are defined in the table bellow:
@@ -58,14 +59,15 @@ void loop() {
   int threshold2 = 70;
   
   tempSensor1.wake();
+  tempSensor2.wake();
 
   // Read and print out the temperature to Serial, also shows the resolution mode used for reading.
   Serial.print("Resolution in mode: ");
   Serial.println (tempSensor1.getResolution());
   float c1 = tempSensor1.readTempC();
-  float c2 = tempSensor2.getTemperature();
+  float c2 = tempSensor2.readTempC();
   float f1 = tempSensor1.readTempF();
-  float f2 = (c2 * (9 / 5)) + 32;
+  float f2 = tempSensor2.readTempF();
   Serial.print("Temp1: "); 
   Serial.print(c1, 4); Serial.print("*C\t and "); 
   Serial.print(f1, 4); Serial.println("*F.");
@@ -132,7 +134,7 @@ void loop() {
   if(thresholdBreached1) {
     display.println("");
     //display.setTextColor(SH110X_RED);
-    display.print(" ! HIGH TEMP BREACH !");
+    display.print("! HIGH TEMP BREACH !");
   }
   else {
     display.println("");
@@ -168,7 +170,7 @@ void loop() {
   if(thresholdBreached2) {
     display.println("");
     //display.setTextColor(SH110X_RED);
-    display.print(" ! HIGH TEMP BREACH !");
+    display.print("! HIGH TEMP BREACH !");
   }
   else {
     display.println("");
@@ -180,4 +182,5 @@ void loop() {
 
   // Complete, sleep sensor and repeat
   tempSensor1.shutdown_wake(1);
+  tempSensor2.shutdown_wake(1);
 }
