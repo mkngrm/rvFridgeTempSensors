@@ -133,12 +133,11 @@ void loop() {
   // Print threshold breached warning if true for sensor 1
   if(thresholdBreached1) {
     display.println("");
-    //display.setTextColor(SH110X_RED);
+    display.setTextColor(SH110X_BLACK, SH110X_WHITE);
     display.print("! HIGH TEMP BREACH !");
   }
   else {
     display.println("");
-    //display.setTextColor(SH110X_GREEN);
     display.print("No breaches detected.");
   }
   display.display();
@@ -169,12 +168,11 @@ void loop() {
   // Print threshold breached warning if true for sensor 1
   if(thresholdBreached2) {
     display.println("");
-    //display.setTextColor(SH110X_RED);
+    display.setTextColor(SH110X_BLACK, SH110X_WHITE);
     display.print("! HIGH TEMP BREACH !");
   }
   else {
     display.println("");
-    //display.setTextColor(SH110X_GREEN);
     display.print("No breaches detected.");
   }
   display.display();
